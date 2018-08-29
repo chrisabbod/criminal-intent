@@ -13,6 +13,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Crime Title"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/crime_date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
