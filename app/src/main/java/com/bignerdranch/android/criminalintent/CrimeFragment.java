@@ -22,6 +22,8 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
 
+    private static final int REQUEST_DATE = 0;
+
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -67,6 +69,8 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        //Keep track of parent-child fragment relationship with setTargetFragment() so when
+        //child Fragment dies the FragmentManager knows which Fragment should receive the result
         mDateButton = v.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getDate().toString());
         mDateButton.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +79,7 @@ public class CrimeFragment extends Fragment {
                 FragmentManager manager = getFragmentManager();
                 DatePickerFragment dialog = DatePickerFragment
                         .newInstance(mCrime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
                 dialog.show(manager, DIALOG_DATE);
             }
         });
