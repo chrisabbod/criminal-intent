@@ -45,8 +45,15 @@ public class CrimeLab {
         mDatabase.insert(CrimeTable.NAME, null, values);
     }
 
-    public void deleteCrime(Crime crime){
+    public void deleteCrime(Crime c){
+        ContentValues values = getContentValues(c);
 
+        //whereClause: Look for a UUID that is equal to something (?)
+        //whereArg: That something (?) is the crimes id put into a String[] array
+        mDatabase.delete(CrimeTable.NAME,
+                CrimeTable.Cols.UUID + " = ?",
+                new String[] {c.getId().toString()}
+                );
     }
 
     //Use Cursor (CrimeCursorWrapper) to query the database for all crimes and populate a Crime list
