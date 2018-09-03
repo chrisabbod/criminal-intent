@@ -1,9 +1,11 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
+import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,6 @@ import java.util.UUID;
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
 
-    private List<Crime> mCrimes;
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
@@ -33,27 +34,51 @@ public class CrimeLab {
     private CrimeLab(Context context){
         mContext = context.getApplicationContext();
         mDatabase = new CrimeBaseHelper(mContext).getWritableDatabase();
-        mCrimes = new ArrayList<>();
     }
 
     public void addCrime(Crime c){
-        mCrimes.add(c);
+        ContentValues values = getContentValues(c);
+
+        //The first argument is the table you want to insert, third argument is the data you want to insert
+        mDatabase.insert(CrimeTable.NAME, null, values);
     }
 
     public void deleteCrime(Crime crime){
-        mCrimes.remove(crime);
+
     }
 
     public List<Crime> getCrimes(){
-        return mCrimes;
+        return new ArrayList<>();
     }
 
     public Crime getCrime(UUID id){
-        for (Crime crime : mCrimes){
-            if(crime.getId().equals(id)){
-                return crime;
-            }
-        }
+
         return null;
+    }
+
+    //Update rows in the database
+    public void updateCrime(Crime crime){
+        String uuidString = crime.getId().toString();
+        ContentValues values = getContentValues(crime);
+
+        //Pass in the table name you want to update, the ContentValues you want to assign to each row
+        //you update, a where clause to specify which rows get updated, and values for the arguments in th4 where clause
+        mDatabase.update(CrimeTable.NAME, values,
+                CrimeTable.Cols.UUID + " = ?",
+                new String[] {uuidString});
+        //You do not put the uuidString directly into the where clause because the String might contain SQL code.
+        //This is because the String may contain SQL code which could be from an SQL injection attack
+    }
+
+    //Writes and updates to databases are done with the assistance of a class called ContentValues.
+    //ContentValues is a key-value store class but specifically designed to store the kinds of data SQLite can hold
+    private static ContentValues getContentValues(Crime crime){
+        ContentValues values = new ContentValues();
+        values.put(CrimeTable.Cols.UUID, crime.getId().toString());
+        values.put(CrimeTable.Cols.TITLE, crime.getTitle());
+        values.put(CrimeTable.Cols.Date, crime.getDate().getTime());
+        values.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
+
+        return values;
     }
 }
