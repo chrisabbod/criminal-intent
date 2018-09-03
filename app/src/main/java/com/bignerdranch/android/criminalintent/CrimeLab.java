@@ -2,6 +2,7 @@ package com.bignerdranch.android.criminalintent;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
@@ -68,6 +69,20 @@ public class CrimeLab {
                 new String[] {uuidString});
         //You do not put the uuidString directly into the where clause because the String might contain SQL code.
         //This is because the String may contain SQL code which could be from an SQL injection attack
+    }
+
+    private Cursor queryCrimes(String whereClause, String[] whereArgs){
+        Cursor cursor = mDatabase.query(
+                CrimeTable.NAME,
+                null,  //columns - null selects all columns
+                whereClause,
+                whereArgs,
+                null, //groupBy
+                null, //having
+                null //orderBy
+        );
+
+        return cursor;
     }
 
     //Writes and updates to databases are done with the assistance of a class called ContentValues.
