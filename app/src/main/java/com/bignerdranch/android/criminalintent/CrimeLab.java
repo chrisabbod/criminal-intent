@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
+import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
 import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable;
 
 import java.util.ArrayList;
@@ -48,13 +49,44 @@ public class CrimeLab {
 
     }
 
+    //Use Cursor (CrimeCursorWrapper) to query the database for all crimes and populate a Crime list
     public List<Crime> getCrimes(){
-        return new ArrayList<>();
+        List<Crime> crimes = new ArrayList<>();
+
+        CrimeCursorWrapper cursor = queryCrimes(null, null);
+
+        //To pull the data out of the cursor you move to the first element by calling moveToFirst()
+        //then read in row data. Each time you want to advance to a new row, you call moveToNext()
+        //until finally isAfterLast() tells you that your pointer is off the end of the data set.
+        try{
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                crimes.add(cursor.getCrime());
+                cursor.moveToNext();
+            }
+        }finally{
+            cursor.close();
+        }
+
+        return crimes;
     }
 
     public Crime getCrime(UUID id){
+        CrimeCursorWrapper cursor = queryCrimes(
+                CrimeTable.Cols.UUID + " = ?",
+                new String[] {id.toString()}
+        );
 
-        return null;
+        try{
+            if (cursor.getCount() == 0){
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getCrime();
+        }finally {
+            cursor.close();
+        }
     }
 
     //Update rows in the database
@@ -71,7 +103,7 @@ public class CrimeLab {
         //This is because the String may contain SQL code which could be from an SQL injection attack
     }
 
-    private Cursor queryCrimes(String whereClause, String[] whereArgs){
+    private CrimeCursorWrapper queryCrimes(String whereClause, String[] whereArgs){
         Cursor cursor = mDatabase.query(
                 CrimeTable.NAME,
                 null,  //columns - null selects all columns
@@ -82,7 +114,7 @@ public class CrimeLab {
                 null //orderBy
         );
 
-        return cursor;
+        return new CrimeCursorWrapper(cursor);
     }
 
     //Writes and updates to databases are done with the assistance of a class called ContentValues.
