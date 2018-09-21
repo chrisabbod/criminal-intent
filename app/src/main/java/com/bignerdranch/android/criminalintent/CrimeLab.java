@@ -41,7 +41,7 @@ public class CrimeLab {
     public void addCrime(Crime c){
         ContentValues values = getContentValues(c);
 
-        //The first argument is the table you want to insert, third argument is the data you want to insert
+        //The first argument is the table you want to insert, third argument is the data you want to insert 
         mDatabase.insert(CrimeTable.NAME, null, values);
     }
 
