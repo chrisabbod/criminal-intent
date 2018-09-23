@@ -2,6 +2,7 @@ package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;;
@@ -132,6 +133,9 @@ public class CrimeFragment extends Fragment {
 
         final Intent pickContact = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
+        //Prevents contacts applications from matching the intent, used to verify the
+        //PackageManager filter below works by disabling suspect button
+        //pickContact.addCategory(Intent.CATEGORY_HOME);
         mSuspectButton = v.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +146,18 @@ public class CrimeFragment extends Fragment {
 
         if(mCrime.getSuspect() != null){
             mSuspectButton.setText(mCrime.getSuspect());
+        }
+
+        //Some users may not have a contacts app, and if the OS cannot find a matching
+        //activity then the app will crash. To fix this first check with part of the OS
+        //called the PackageManager
+        //PackageManager knows all components installed on your Android device. Here you ask it to
+        //find an activity that matches the Intent you gave it. MATCH_DEFAULT_ONLY restricts the
+        //search to activities with the CATEGORY_DEFAULT flag
+        PackageManager packageManager = getActivity().getPackageManager();
+        if(packageManager.resolveActivity(pickContact,
+                PackageManager.MATCH_DEFAULT_ONLY) == null){
+            mSuspectButton.setEnabled(false);
         }
 
         return v;
