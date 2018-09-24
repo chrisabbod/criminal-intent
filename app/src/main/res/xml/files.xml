@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Map the root path of my private storage as crime_photos -->
+<!-- Hook up files.xml to FileProvider by adding a meta-data tag in AndroidManifest.xml -->
+<paths>
+    <files-path
+        name="crime_photos"
+        path="." />
+</paths>
