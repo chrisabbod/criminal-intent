@@ -21,7 +21,7 @@ import java.util.UUID;
 //This Activity has taken the place of CrimeActivity. It now start a CrimeFragment and
 //runs a ViewPager to inflate other CrimeFragments the user swipes to
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks{
     private static final String EXTRA_CRIME_ID =
             "com.bignerdranch.android.criminalintent.crime_id";
 
@@ -67,5 +67,10 @@ public class CrimePagerActivity extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+    @Override
+    public void onCrimeUpdated(Crime crime){
+
     }
 }

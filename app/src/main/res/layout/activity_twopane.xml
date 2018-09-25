@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="?android:attr/dividerHorizontal"
+    android:showDividers="middle"
+    android:orientation="horizontal">
+
+    <!-- The first frame layout has a fragment_container layout ID, so the code in
+    SingleFragmentActivity.onCreate(...) can work correctly. When the activity is created, the
+    fragment that is returned in createFragment() will appear in the lefthand pane. -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        
+    </FrameLayout>
+    
+    <FrameLayout
+        android:id="@+id/detail_fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+        
+    </FrameLayout>
+
+</LinearLayout>
